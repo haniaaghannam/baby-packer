@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#3D8C6E"/>
+<meta name="description" content="Smart baby trip packing assistant — get a personalised checklist for travelling with your little one."/>
+<meta property="og:title" content="🧳 Baby Trip Packer"/>
+<meta property="og:description" content="The smartest packing checklist for mamas travelling with a baby. Personalised in seconds."/>
+<meta property="og:type" content="website"/>
+<title>🧳 Baby Trip Packer — Smart Packing for Little Ones</title>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YM7HKZJRVB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YM7HKZJRVB');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  /* Cool light sage palette */
+  --sage:#7FBFA0;
+  --sage-light:#E6F4EF;
+  --sage-lighter:#F1F9F6;
+  --sage-mid:#AEDACC;
+  --sage-dark:#3D8C6E;
+  --sage-darker:#2C6B52;
+  --sage-glow:rgba(61,140,110,.10);
+
+  /* Neutrals — cool blue-grey undertone */
+  --cream:#F4F7F6;
+  --warm-white:#FAFCFB;
+  --surface:#FFFFFF;
+  --charcoal:#1C2825;
+  --mid:#526660;
+  --soft:#96ACAA;
+  --border:#D8E8E3;
+  --border-strong:#B8D4CC;
+
+  /* Accents */
+  --amber:#F59E0B;
+  --rose:#F87171;
+
+  --r:16px;--r-sm:10px;--r-xs:7px;--r-pill:100px;
+  --fd:'DM Serif Display',Georgia,serif;
+  --fb:'DM Sans',system-ui,sans-serif;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+
+  --shadow-sm:0 1px 3px rgba(30,36,32,.07),0 1px 2px rgba(30,36,32,.04);
+  --shadow-md:0 4px 12px rgba(30,36,32,.09),0 2px 4px rgba(30,36,32,.05);
+  --shadow-card:0 0 0 1px var(--border),0 2px 8px rgba(30,36,32,.06);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--fb);
+  background:var(--cream);
+  color:var(--charcoal);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ═══════════════════════════════════════
+   HERO — gradient sage strip with texture
+   ═══════════════════════════════════════ */
+.hero{
+  background:linear-gradient(135deg,var(--sage-darker) 0%,var(--sage-dark) 55%,#4AA880 100%);
+  padding:clamp(28px,6vw,52px) clamp(16px,5vw,32px) clamp(22px,4vw,40px);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(255,255,255,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'🌿';
+  position:absolute;right:-8px;top:-6px;font-size:96px;opacity:.07;
+  line-height:1;transform:rotate(12deg);pointer-events:none;
+  display:none; /* decorative, only shown on wide screens */
+}
+@media(min-width:480px){.hero::after{display:block}}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  color:rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:var(--r-pill);
+  padding:5px 15px;
+  font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+.hero h1{
+  font-family:var(--fd);
+  font-size:clamp(24px,7vw,44px);
+  font-weight:400;line-height:1.15;
+  margin-bottom:10px;
+  color:#fff;
+}
+.hero h1 em{font-style:italic;color:var(--sage-mid)}
+.hero p{
+  color:rgba(255,255,255,.75);
+  font-size:clamp(13px,2.5vw,15px);
+  max-width:400px;margin:0 auto;
+  line-height:1.7;
+}
+
+/* ═══════════════════════════════════════
+   MOBILE TAB BAR
+   ═══════════════════════════════════════ */
+.tab-bar{
+  display:none;
+  position:sticky;top:0;z-index:100;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 2px 8px rgba(30,36,32,.06);
+}
+.tab-bar-inner{display:flex}
+.tab-btn{
+  flex:1;padding:14px 0;
+  font-family:var(--fb);font-size:13px;font-weight:500;
+  color:var(--soft);
+  background:none;border:none;
+  border-bottom:2.5px solid transparent;
+  cursor:pointer;
+  transition:color .2s,border-color .2s,background .2s;
+  letter-spacing:.01em;
+}
+.tab-btn:active{background:var(--sage-lighter)}
+.tab-btn.active{color:var(--sage-dark);border-bottom-color:var(--sage-dark);font-weight:600}
+
+/* ═══════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════ */
+.container{
+  max-width:960px;margin:0 auto;
+  padding:20px 16px 80px;
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:16px;
+  align-items:start;
+}
+
+/* ═══════════════════════════════════════
+   CARD
+   ═══════════════════════════════════════ */
+.card{
+  background:var(--surface);
+  border-radius:var(--r);
+  padding:16px;
+  box-shadow:var(--shadow-card);
+}
+.card-title{
+  font-family:var(--fd);font-size:17px;font-weight:400;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+  color:var(--charcoal);
+}
+.card-title-icon{
+  width:28px;height:28px;border-radius:7px;
+  background:var(--sage-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════
+   FIELDS
+   ═══════════════════════════════════════ */
+.field{margin-bottom:18px}
+.field label{
+  display:block;
+  font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--soft);margin-bottom:7px;
+}
+.field input,.field select{
+  width:100%;
+  padding:12px 14px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  background:var(--cream);
+  color:var(--charcoal);
+  font-family:var(--fb);font-size:15px;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+  outline:none;
+  -webkit-appearance:none;appearance:none;
+}
+.field input:focus,.field select:focus{
+  border-color:var(--sage);
+  background:var(--warm-white);
+  box-shadow:0 0 0 3.5px var(--sage-glow);
+}
+.field input::placeholder{color:var(--soft)}
+
+/* ═══════════════════════════════════════
+   CHIPS
+   ═══════════════════════════════════════ */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  padding:8px 16px;
+  border-radius:var(--r-pill);
+  border:1.5px solid var(--border);
+  background:var(--cream);
+  color:var(--mid);
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  user-select:none;white-space:nowrap;
+  min-height:38px;display:flex;align-items:center;
+  line-height:1;
+}
+.chip:hover{border-color:var(--sage-mid);color:var(--sage-dark);background:var(--sage-lighter)}
+.chip:active{transform:scale(.95)}
+.chip.on{
+  background:var(--sage-dark);
+  border-color:var(--sage-dark);
+  color:#fff;
+  box-shadow:0 2px 8px rgba(46,102,73,.25);
+}
+
+/* ═══════════════════════════════════════
+   WEATHER HINT
+   ═══════════════════════════════════════ */
+.weather-hint{
+  display:none;margin-top:10px;
+  padding:12px 14px;
+  border-radius:var(--r-sm);
+  font-size:13px;line-height:1.6;
+}
+.weather-hint b{display:block;font-weight:700;margin-bottom:3px;font-size:12px}
+.weather-hint.hot{background:#FEF3EC;border:1.5px solid #F9C8A8;color:#7A3010}
+.weather-hint.cold{background:#EDF2FF;border:1.5px solid #BAC8F3;color:#2D3D8C}
+.weather-hint.cool{background:#EFF6FF;border:1.5px solid #A5C8F8;color:#1A4580}
+.weather-hint.mild{background:var(--sage-light);border:1.5px solid var(--sage-mid);color:var(--sage-dark)}
+
+/* ═══════════════════════════════════════
+   DIVIDER
+   ═══════════════════════════════════════ */
+.divider{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--soft);margin:22px 0 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ═══════════════════════════════════════
+   GENERATE BUTTON
+   ═══════════════════════════════════════ */
+.btn-gen{
+  width:100%;margin-top:22px;padding:15px;
+  border-radius:var(--r-sm);border:none;
+  background:linear-gradient(135deg,var(--sage-dark),var(--sage-darker));
+  color:#fff;
+  font-family:var(--fb);font-size:15px;font-weight:600;
+  cursor:pointer;
+  transition:opacity .2s,transform .12s,box-shadow .2s;
+  min-height:52px;
+  letter-spacing:.01em;
+  box-shadow:0 3px 12px rgba(46,102,73,.3);
+}
+.btn-gen:hover{opacity:.92;box-shadow:0 4px 18px rgba(46,102,73,.4)}
+.btn-gen:active{transform:scale(.98);opacity:.88}
+
+/* ═══════════════════════════════════════
+   MOBILE STICKY CTA
+   ═══════════════════════════════════════ */
+.mobile-cta{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  padding:12px 16px calc(14px + var(--safe-b));
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  box-shadow:0 -4px 16px rgba(30,36,32,.08);
+  z-index:200;
+}
+.mobile-cta button{
+  width:100%;padding:16px;
+  border-radius:var(--r-sm);border:none;
+  background:linear-gradient(135deg,var(--sage-dark),var(--sage-darker));
+  color:#fff;
+  font-family:var(--fb);font-size:15px;font-weight:600;
+  cursor:pointer;min-height:52px;
+  box-shadow:0 3px 12px rgba(46,102,73,.3);
+  transition:opacity .2s,transform .12s;
+}
+.mobile-cta button:active{transform:scale(.98);opacity:.9}
+
+/* ═══════════════════════════════════════
+   OUTPUT / EMPTY STATE
+   ═══════════════════════════════════════ */
+.output-card{
+  position:sticky;
+  top:16px;
+}
+.empty-state{text-align:center;padding:36px 16px}
+.empty-state .illo{
+  font-size:44px;margin-bottom:12px;line-height:1;
+  display:block;
+}
+.empty-state h3{
+  font-family:var(--fd);font-size:18px;font-weight:400;
+  color:var(--mid);margin-bottom:8px;
+}
+.empty-state p{
+  font-size:13px;color:var(--soft);
+  max-width:210px;margin:0 auto;line-height:1.7;
+}
+
+/* ═══════════════════════════════════════
+   DESTINATION HEADER
+   ═══════════════════════════════════════ */
+.list-dest{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;
+  margin-bottom:14px;
+  background:linear-gradient(135deg,var(--sage-lighter),var(--sage-light));
+  border:1.5px solid var(--sage-mid);
+  border-radius:var(--r-sm);
+}
+.list-dest-icon{font-size:22px;line-height:1;flex-shrink:0}
+.list-dest-name{
+  font-family:var(--fd);font-size:16px;font-weight:400;
+  color:var(--sage-darker);line-height:1.2;
+  text-transform:capitalize;
+}
+.list-dest-meta{
+  font-size:11px;color:var(--sage);font-weight:600;
+  margin-top:3px;letter-spacing:.01em;
+}
+
+/* ═══════════════════════════════════════
+   STATS ROW
+   ═══════════════════════════════════════ */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.stat-box{
+  background:var(--sage-lighter);
+  border:1.5px solid var(--sage-light);
+  border-radius:var(--r-sm);
+  padding:10px 6px;text-align:center;
+}
+.stat-box .val{
+  font-family:var(--fd);font-size:24px;
+  color:var(--sage-dark);line-height:1;
+}
+.stat-box .lbl{
+  font-size:10px;color:var(--sage);
+  margin-top:3px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+
+/* ═══════════════════════════════════════
+   PROGRESS BAR
+   ═══════════════════════════════════════ */
+.progress-wrap{margin-bottom:14px}
+.progress-track{
+  height:6px;background:var(--border);
+  border-radius:99px;overflow:hidden;margin-bottom:6px;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--sage) 0%,var(--sage-dark) 100%);
+  border-radius:99px;
+  transition:width .55s cubic-bezier(.4,0,.2,1);width:0%;
+  position:relative;overflow:hidden;
+}
+.progress-fill::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+  animation:shimmer 2s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.progress-meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.progress-pct{font-size:12px;font-weight:700;color:var(--sage-dark);white-space:nowrap}
+.progress-msg{font-size:12px;color:var(--mid);font-style:italic;text-align:right}
+
+/* ═══════════════════════════════════════
+   FILTER DROPDOWN + MUST-HAVES TOGGLE
+   ═══════════════════════════════════════ */
+.filter-wrap{
+  position:relative;
+  flex:1;
+  margin-bottom:0;
+}
+.filter-row{display:flex;gap:6px;margin-bottom:12px;align-items:stretch}
+.filter-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  flex:1;
+  padding:7px 12px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  background:var(--cream);
+  color:var(--charcoal);
+  font-family:var(--fb);font-size:12px;font-weight:600;
+  cursor:pointer;
+  transition:border-color .18s,background .18s;
+  text-align:left;
+}
+.filter-toggle:hover{border-color:var(--sage-mid);background:var(--sage-lighter)}
+.filter-toggle-label{flex:1}
+.filter-toggle-arrow{
+  font-size:10px;color:var(--soft);
+  transition:transform .2s;
+  margin-left:8px;
+}
+.filter-wrap.open .filter-toggle-arrow{transform:rotate(180deg)}
+.filter-wrap.open .filter-toggle{border-color:var(--sage);border-bottom-color:transparent;border-radius:var(--r-sm) var(--r-sm) 0 0;background:var(--surface)}
+
+.filter-dropdown{
+  display:none;
+  position:absolute;top:100%;left:0;right:0;z-index:50;
+  background:var(--surface);
+  border:1.5px solid var(--sage);
+  border-top:none;
+  border-radius:0 0 var(--r-sm) var(--r-sm);
+  box-shadow:0 6px 16px rgba(30,36,32,.1);
+  overflow:hidden;
+}
+.filter-wrap.open .filter-dropdown{display:block}
+.filter-option{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;
+  font-size:12px;font-weight:500;color:var(--mid);
+  cursor:pointer;
+  transition:background .12s;
+  border-bottom:1px solid var(--border);
+}
+.filter-option:last-child{border-bottom:none}
+.filter-option:hover{background:var(--sage-lighter);color:var(--sage-dark)}
+.filter-option.on{background:var(--sage-light);color:var(--sage-dark);font-weight:700}
+
+/* Must-haves toggle button */
+.btn-musthave{
+  display:flex;align-items:center;gap:5px;
+  padding:7px 11px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  background:var(--cream);
+  color:var(--mid);
+  font-family:var(--fb);font-size:11px;font-weight:600;
+  cursor:pointer;white-space:nowrap;
+  transition:all .18s;flex-shrink:0;
+}
+.btn-musthave:hover{border-color:#F2C8B8;background:#FEF0EC;color:#B85A3A}
+.btn-musthave.active{background:#FEF0EC;border-color:#F2C8B8;color:#B85A3A}
+
+/* ═══════════════════════════════════════
+   SECTIONS — collapsible
+   ═══════════════════════════════════════ */
+.section{
+  margin-bottom:0;
+  border-bottom:1px solid var(--border);
+}
+.section:last-of-type{border-bottom:none}
+
+.section-head{
+  display:flex;align-items:center;gap:7px;
+  padding:11px 4px;
+  margin:0 -4px;
+  cursor:pointer;
+  border-radius:var(--r-xs);
+  transition:background .12s;
+  user-select:none;
+}
+.section-head:hover{background:var(--cream)}
+.section-emoji{font-size:15px;line-height:1;flex-shrink:0}
+.section-title{
+  font-weight:700;font-size:11px;flex:1;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--soft);
+}
+.section-count{
+  font-size:11px;
+  background:var(--cream);border:1px solid var(--border);
+  border-radius:99px;padding:1px 8px;
+  color:var(--mid);font-weight:600;
+}
+.section-chevron{
+  font-size:9px;color:var(--soft);margin-left:2px;
+  transition:transform .22s cubic-bezier(.4,0,.2,1);
+  flex-shrink:0;
+}
+.section.collapsed .section-chevron{transform:rotate(-90deg)}
+.section-items{
+  overflow:hidden;
+  transition:max-height .28s cubic-bezier(.4,0,.2,1);
+  max-height:2000px;
+  padding-bottom:4px;
+}
+.section.collapsed .section-items{max-height:0;padding-bottom:0}
+
+/* Carry-on badge */
+.badge-carryon{background:#EEF3FF;color:#2D4A9C;border:1px solid #BAC8F3}
+
+/* ═══════════════════════════════════════
+   ITEMS
+   ═══════════════════════════════════════ */
+.item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 4px;
+  margin:0 -4px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  transition:background .12s;
+  border-radius:var(--r-xs);
+}
+.item:last-child{border-bottom:none}
+.item:hover{background:var(--cream)}
+.item:active{background:var(--sage-lighter)}
+.item-check{
+  width:18px;height:18px;
+  border:2px solid var(--border-strong);
+  border-radius:4px;flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s cubic-bezier(.4,0,.2,1);
+  font-size:10px;color:transparent;font-weight:800;
+  background:var(--surface);
+}
+.item.checked .item-check{
+  background:var(--sage-dark);border-color:var(--sage-dark);
+  color:#fff;
+  box-shadow:0 1px 4px rgba(46,102,73,.35);
+}
+.item-body{flex:1;min-width:0}
+.item-text{font-size:13px;color:var(--charcoal);line-height:1.45}
+.item.checked .item-text{text-decoration:line-through;color:var(--soft)}
+.item-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.item-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:10px;font-weight:700;padding:1px 7px;
+  border-radius:var(--r-pill);letter-spacing:.02em;
+}
+.badge-must{background:#FEF0EC;color:#B85A3A;border:1px solid #F2C8B8}
+.badge-forget{background:#FFFBEA;color:#856A08;border:1px solid #F0DAA0}
+.badge-tip{background:var(--sage-light);color:var(--sage-dark);border:1px solid var(--sage-mid)}
+/* custom item delete button */
+.item-del{
+  background:none;border:none;cursor:pointer;
+  color:var(--soft);font-size:14px;line-height:1;padding:0 2px;
+  flex-shrink:0;margin-top:1px;opacity:0;transition:opacity .15s,color .15s;
+}
+.item:hover .item-del{opacity:1}
+.item-del:hover{color:var(--rose)}
+
+/* ═══════════════════════════════════════
+   ADD CUSTOM ITEM
+   ═══════════════════════════════════════ */
+.add-item-row{
+  display:flex;gap:6px;
+  padding:10px 0 4px;
+}
+.add-item-input{
+  flex:1;min-width:0;
+  padding:8px 10px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  background:var(--cream);
+  color:var(--charcoal);
+  font-family:var(--fb);font-size:13px;
+  outline:none;
+  transition:border-color .18s,box-shadow .18s;
+}
+.add-item-input:focus{
+  border-color:var(--sage);
+  box-shadow:0 0 0 3px var(--sage-glow);
+  background:var(--warm-white);
+}
+.add-item-input::placeholder{color:var(--soft)}
+.add-item-btn{
+  padding:8px 12px;
+  border-radius:var(--r-sm);border:none;
+  background:var(--sage-dark);color:#fff;
+  font-family:var(--fb);font-size:12px;font-weight:600;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:opacity .18s;
+}
+.add-item-btn:hover{opacity:.88}
+.add-item-btn:active{transform:scale(.97)}
+
+/* ═══════════════════════════════════════
+   SHARE LIST MODAL
+   ═══════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(28,40,37,.45);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  align-items:center;justify-content:center;padding:16px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);
+  border-radius:var(--r);
+  padding:20px;
+  width:100%;max-width:420px;
+  box-shadow:var(--shadow-md);
+  display:flex;flex-direction:column;gap:12px;
+}
+.modal-title{font-family:var(--fd);font-size:18px;font-weight:400;color:var(--charcoal)}
+.modal-sub{font-size:12px;color:var(--soft)}
+.modal-textarea{
+  width:100%;height:180px;
+  padding:10px 12px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  background:var(--cream);
+  color:var(--charcoal);
+  font-family:var(--fb);font-size:12px;
+  line-height:1.6;resize:none;outline:none;
+}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap}
+.modal-btn{
+  flex:1;min-width:100px;
+  padding:10px 14px;border-radius:var(--r-sm);
+  font-family:var(--fb);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .18s;min-height:42px;
+}
+.modal-btn-primary{
+  background:linear-gradient(135deg,var(--sage-dark),var(--sage-darker));
+  color:#fff;border:none;
+  box-shadow:0 2px 8px rgba(46,102,73,.25);
+}
+.modal-btn-primary:hover{opacity:.9}
+.modal-btn-secondary{
+  background:transparent;color:var(--mid);
+  border:1.5px solid var(--border);
+}
+.modal-btn-secondary:hover{border-color:var(--sage-mid);color:var(--sage-dark)}
+
+/* ═══════════════════════════════════════
+   DONE MESSAGE
+   ═══════════════════════════════════════ */
+.done-msg{
+  display:none;text-align:center;
+  padding:24px 18px;
+  background:linear-gradient(135deg,var(--sage-light),var(--sage-lighter));
+  border:1.5px solid var(--sage-mid);
+  border-radius:var(--r-sm);margin-top:16px;
+}
+.done-msg .big{font-size:36px;display:block;margin-bottom:10px}
+.done-msg p{font-size:14px;color:var(--sage-dark);font-weight:500;line-height:1.7}
+
+/* ═══════════════════════════════════════
+   SHARE ROW
+   ═══════════════════════════════════════ */
+.share-row{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.btn-share{
+  flex:1;min-width:130px;
+  padding:11px 14px;
+  border-radius:var(--r-sm);
+  border:1.5px solid var(--border);
+  background:transparent;color:var(--mid);
+  font-family:var(--fb);font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .18s;text-align:center;min-height:44px;
+}
+.btn-share:hover{
+  border-color:var(--sage);
+  background:var(--sage-light);color:var(--sage-dark);
+}
+.btn-share:active{transform:scale(.97)}
+
+/* ═══════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:88px;left:50%;
+  transform:translateX(-50%) translateY(14px);
+  background:var(--charcoal);color:#fff;
+  padding:12px 24px;border-radius:var(--r-pill);
+  font-size:13px;font-weight:500;
+  opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;z-index:999;
+  white-space:nowrap;max-width:92vw;text-align:center;
+  box-shadow:var(--shadow-md);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════ */
+.print-note{display:none}
+@media print{
+  .tab-bar,.mobile-cta,.left-col,.share-row,.filter-bar,.hero-badge,.btn-gen,.hero::after{display:none!important}
+  .container{display:block;padding:0}
+  .hero{background:#3D8C6E!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .output-card{position:static;border:none;padding:0;background:none;box-shadow:none}
+  .print-note{display:block;font-size:11px;color:#888;margin-bottom:12px}
+  .card{box-shadow:none;border:1px solid #ddd}
+  .section{border:1px solid #eee}
+}
+
+/* ═══════════════════════════════════════
+   TABLET  (≤ 860px)
+   ═══════════════════════════════════════ */
+@media(max-width:860px){
+  .container{grid-template-columns:260px 1fr;gap:12px;padding:16px 12px 80px}
+}
+
+/* ═══════════════════════════════════════
+   MOBILE  (≤ 680px)
+   ═══════════════════════════════════════ */
+@media(max-width:680px){
+  .tab-bar{display:block}
+  .mobile-cta{display:block}
+
+  .container{
+    grid-template-columns:1fr;
+    padding:10px 10px calc(88px + var(--safe-b));
+    gap:10px;
+  }
+
+  .card{padding:14px 12px}
+
+  .left-col{display:none}
+  .left-col.tab-active{display:block}
+  .right-col{display:none}
+  .right-col.tab-active{display:block}
+
+  .output-card{position:static}
+
+  .hero{padding:18px 14px 16px}
+  .hero::after{display:none}
+  .hero p{font-size:13px}
+  .hero h1{font-size:clamp(21px,6.5vw,30px)}
+
+  .btn-gen{display:none}
+
+  .share-row{flex-direction:column}
+  .btn-share{min-width:unset;width:100%}
+
+  .toast{bottom:96px}
+
+  .chip{padding:9px 14px;font-size:13px;min-height:42px}
+  .field input,.field select{font-size:16px;padding:12px 12px}
+
+  .item{padding:10px 2px;margin:0 -2px;min-height:44px;gap:10px}
+  .item-check{width:20px;height:20px}
+  .item-text{font-size:13px}
+
+  .stats-row{gap:6px}
+  .stat-box{padding:10px 4px}
+  .stats-row .val{font-size:20px}
+
+  .empty-state{padding:28px 12px}
+  .empty-state .illo{font-size:40px}
+
+  .section{padding:10px 0}
+  .progress-msg{display:none}
+  .section-head{padding:9px 2px;margin:0 -2px}
+}
+
+/* ═══════════════════════════════════════
+   SMALL MOBILE  (≤ 380px)
+   ═══════════════════════════════════════ */
+@media(max-width:380px){
+  .chips{gap:5px}
+  .chip{padding:8px 11px;font-size:12px}
+  .stats-row .val{font-size:18px}
+  .hero h1{font-size:20px}
+  .card{padding:12px 10px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">✨ Smart Packing Assistant</div>
+  <h1>Pack <em>perfectly</em><br>for your little one</h1>
+  <p>Answer a few quick questions and get a personalised, checkable packing list — ready in seconds. 🧳</p>
+</div>
+
+<div class="tab-bar" id="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" onclick="switchTab('form',this)">⚙️ Trip details</button>
+    <button class="tab-btn" onclick="switchTab('list',this)" id="list-tab-btn">📋 My list</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="left-col tab-active" id="form-col">
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">🗺️</div> Your trip</div>
+
+      <div class="field">
+        <label>Where are you headed?</label>
+        <input id="dest" placeholder="e.g. Dubai, Paris, Hurghada…" oninput="onDest(this.value)" autocomplete="off" autocorrect="off"/>
+        <div id="weather-hint" class="weather-hint"></div>
+      </div>
+
+      <div class="field">
+        <label>Departure date</label>
+        <input id="date" type="date"/>
+      </div>
+
+      <div class="field">
+        <label>How many nights? 🌙</label>
+        <input id="nights" type="number" value="5" min="1" max="90" step="1" inputmode="numeric"/>
+      </div>
+
+      <div class="divider">About your baby</div>
+
+      <div class="field">
+        <label>Baby's age group 👶</label>
+        <div class="chips" id="age-chips">
+          <div class="chip on" data-v="newborn">0–3 months</div>
+          <div class="chip" data-v="infant">4–8 months</div>
+          <div class="chip" data-v="crawler">9–12 months</div>
+          <div class="chip" data-v="toddler">1–2 years</div>
+        </div>
+      </div>
+
+      <div class="divider">How you travel</div>
+
+      <div class="field">
+        <label>Getting there by…</label>
+        <div class="chips" id="travel-chips">
+          <div class="chip on" data-v="flight">✈️ Flight</div>
+          <div class="chip" data-v="road">🚗 Road trip</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Feeding style 🍼</label>
+        <div class="chips" id="feeding-chips">
+          <div class="chip on" data-v="breast">🤱 Breastfeeding</div>
+          <div class="chip" data-v="formula">🍼 Formula</div>
+          <div class="chip" data-v="combo">🔀 Both</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Started solids? 🥣</label>
+        <div class="chips" id="solids-chips">
+          <div class="chip on" data-v="no">Not yet</div>
+          <div class="chip" data-v="yes">Yes, eating solids</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Laundry access? 🧺</label>
+        <div class="chips" id="laundry-chips">
+          <div class="chip on" data-v="yes">✅ Yes</div>
+          <div class="chip" data-v="no">❌ No — packing everything</div>
+        </div>
+      </div>
+
+      <button class="btn-gen" onclick="generate()">✨ Build my packing list</button>
+    </div>
+  </div>
+
+  <div class="right-col tab-active" id="list-col">
+    <div class="card output-card">
+      <div id="empty-state" class="empty-state">
+        <div class="illo">🧳</div>
+        <h3>Your checklist is waiting</h3>
+        <p>Fill in your trip details and tap <strong>Build my packing list</strong> to get started. 💛</p>
+      </div>
+      <div id="list-area" style="display:none"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="mobile-cta" id="mobile-cta">
+  <button onclick="mobileGenerate()">✨ Build my packing list</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Share list modal -->
+<div class="modal-overlay" id="share-modal" onclick="closeShareModal(event)">
+  <div class="modal">
+    <div class="modal-title">📋 Share your list</div>
+    <div class="modal-sub">Your personalised packing list, ready to copy and send to your partner or family.</div>
+    <textarea class="modal-textarea" id="share-text" readonly></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-primary" onclick="copyShareText()">📋 Copy to clipboard</button>
+      <button class="modal-btn modal-btn-secondary" onclick="closeShareModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var S={age:'newborn',travel:'flight',feeding:'breast',solids:'no',laundry:'yes',weather:'mild'};
+var checked=new Set(),sections=[],activeFilter='all',mustOnly=false;
+// custom items per section: {sectionId: [{t,b,custom}]}
+var customItems={};
+
+var wDB={
+  hot:['dubai','gouna','hurghada','sharm','sahel','luxor','aswan','maldives','bali','miami','cancun','phuket','marrakech','doha','tulum','zanzibar','mauritius','seychelles','egypt','abu dhabi','riyadh','oman','muscat','qatar','bahrain','agadir','dakhla'],
+  cold:['switzerland','zurich','oslo','stockholm','reykjavik','helsinki','alps','munich','copenhagen','montreal','alaska','lapland','iceland','norway','finland','sweden','austria','innsbruck','salzburg'],
+  cool:['london','paris','berlin','amsterdam','brussels','prague','rome','toronto','new york','boston','chicago','seattle','edinburgh','dublin','lisbon','madrid','barcelona','milan','vienna','warsaw','budapest','athens','istanbul','bangkok']
+};
+var wMeta={
+  hot:{emoji:'☀️',label:'Hot & sunny destination!',hint:'Pack light breathable layers, baby swimwear, a wide-brim sun hat, and mineral SPF 50+ sunscreen. Plan outdoor time for early mornings and evenings — baby\'s skin needs protecting from strong sun. 🌊',cls:'hot'},
+  cold:{emoji:'❄️',label:'Cold weather ahead!',hint:'You\'ll need thermal onesies, heavy layers, a warm sleep sack rated for the temperature, and windproof outerwear. Babies lose heat quickly through their heads and hands — keep them covered! 🧣',cls:'cold'},
+  cool:{emoji:'🌤️',label:'Cool city weather expected.',hint:'Bring versatile layers — a vest, long-sleeve, cardigan and waterproof outer layer covers everything. A stroller blanket is a lifesaver for walks. ☕',cls:'cool'},
+  mild:{emoji:'🌿',label:'Mild weather — easy to pack for!',hint:'Light layers that adapt through the day are your best bet. A cardigan plus one warmer backup covers most situations comfortably. 😊',cls:'mild'}
+};
+
+function detectW(city){
+  var c=city.toLowerCase();
+  for(var w in wDB)for(var i=0;i<wDB[w].length;i++)if(c.includes(wDB[w][i]))return w;
+  return'mild';
+}
+function onDest(val){
+  var el=document.getElementById('weather-hint');
+  if(!val.trim()){el.style.display='none';return;}
+  S.weather=detectW(val);
+  var m=wMeta[S.weather];
+  el.className='weather-hint '+m.cls;
+  el.style.display='block';
+  el.innerHTML='<b>'+m.emoji+' '+m.label+'</b>'+m.hint;
+}
+function initChips(id,key){
+  document.getElementById(id).addEventListener('click',function(e){
+    var c=e.target.closest('.chip');if(!c)return;
+    this.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});
+    c.classList.add('on');S[key]=c.dataset.v;
+  });
+}
+initChips('age-chips','age');initChips('travel-chips','travel');initChips('feeding-chips','feeding');initChips('solids-chips','solids');initChips('laundry-chips','laundry');
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var mcta=document.getElementById('mobile-cta');
+  if(tab==='form'){
+    document.getElementById('form-col').classList.add('tab-active');
+    document.getElementById('list-col').classList.remove('tab-active');
+    mcta.style.display='block';
+  } else {
+    document.getElementById('list-col').classList.add('tab-active');
+    document.getElementById('form-col').classList.remove('tab-active');
+    mcta.style.display='none';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+function mobileGenerate(){
+  generate();
+  var listBtn=document.getElementById('list-tab-btn');
+  switchTab('list',listBtn);
+}
+
+function generate(){
+  var nights=Math.max(1,parseInt(document.getElementById('nights').value)||5);
+  var laundry=S.laundry==='yes';
+  var tf=S.weather==='cold'?1.6:S.weather==='cool'?1.25:S.weather==='hot'?0.9:1;
+  var cm=laundry?1:1.7;
+  var clothes=Math.ceil(nights*cm*tf);
+  var diapers=Math.ceil(nights*8+(nights>4?10:5));
+  var wipes=Math.ceil(nights/3)+2;
+  sections=[];
+  customItems={};
+
+  // #9 carry-on badge: 'carryon' marks items for cabin bag on flights
+  var d=[
+    {t:diapers+' diapers — sized to baby\'s current weight',b:'must'},
+    {t:wipes+' packs of unscented baby wipes',b:null},
+    {t:'Diaper rash cream or zinc oxide ointment',b:'must'},
+    {t:'Portable waterproof changing mat',b:'must'},
+    {t:'Zip-lock bags for dirty diapers or soiled clothes',b:'forget'},
+    {t:'Small nappy sacks or scented bags',b:null}
+  ];
+  if(S.travel==='flight')d.push({t:'3 spare diapers in your carry-on — separate from the main bag!',b:'forget',co:true});
+  sections.push({id:'diaper',emoji:'🧷',title:'Diapering',items:d});
+
+  var cl=[
+    {t:clothes+' onesies or bodysuits',b:null},
+    {t:clothes+' complete outfits',b:null},
+    {t:Math.ceil(clothes*.8)+' pairs of pajamas or sleepsuits',b:null},
+    {t:(clothes+2)+' pairs of socks — they disappear in suitcases 😅',b:'forget'},
+    {t:'1–2 hats suited to the weather',b:'must'}
+  ];
+  if(S.weather==='cold'){cl.push({t:'Thermal base layer onesies (at least 2)',b:'must'},{t:'Snowsuit or padded bunting bag',b:'must'},{t:'Mittens and warm scratch mitts',b:null});}
+  if(S.weather==='hot'){cl.push({t:'UV-protection swimsuit or rashguard',b:'must'},{t:'Breathable muslin wraps — shade, swaddle, and nursing cover in one',b:'tip'});}
+  if(!laundry)cl.push({t:'2 extra backup outfits beyond your count — spills will happen',b:'tip'});
+  if(S.travel==='flight')cl.push({t:'Full outfit change in carry-on (two for long-haul flights)',b:'must',co:true});
+  sections.push({id:'clothes',emoji:'👗',title:'Clothing',items:cl});
+
+  var f=[];
+  if(S.feeding==='breast'||S.feeding==='combo')f.push(
+    {t:'Nursing cover or lightweight muslin',b:null},
+    {t:'Nipple cream (Lansinoh or equivalent)',b:null},
+    {t:'Breast pads — pack more than you think you need',b:'tip'},
+    {t:'Manual pump as backup (great for airports)',b:'tip'}
+  );
+  if(S.feeding==='formula'||S.feeding==='combo')f.push(
+    {t:'Formula in pre-measured single-serve travel packs',b:'must'},
+    {t:'3–4 bottles with lids',b:'must'},
+    {t:'Microwave sterilizer bag',b:null},
+    {t:'Insulated bottle bag with ice packs',b:null}
+  );
+  f.push({t:'5–6 burp cloths',b:null});
+  if(S.travel==='flight'&&(S.feeding==='formula'||S.feeding==='combo'))
+    f.push({t:'Pre-measured formula portion in carry-on for in-flight feeds',b:'must',co:true});
+  if(S.solids==='yes')f.push(
+    {t:'Silicone bibs — wipe-clean, no laundry needed 🙌',b:'tip'},
+    {t:'Squeezable food pouches or snack pots',b:null},
+    {t:'Collapsible silicone bowl + small spoon',b:null},
+    {t:'Familiar puffs or snacks for travel distraction',b:'tip',co:S.travel==='flight'}
+  );
+  sections.push({id:'feeding',emoji:'🍼',title:'Feeding',items:f});
+
+  var sl=[];
+  if(S.age==='newborn'){sl.push({t:'Portable bassinet or bedside sleeper',b:'must'},{t:'2–3 swaddle wraps or light blankets',b:'must'},{t:'White noise machine or app — an absolute trip-saver',b:'tip'});}
+  else{sl.push({t:'Travel cot or pack-and-play — confirm with accommodation first',b:'must'},{t:'Your own fitted sheet for the cot — hotels often skip this',b:'forget'});}
+  sl.push(
+    {t:'Sleep sack rated for the destination temperature',b:'must'},
+    {t:'A familiar comfort item or soft toy from home',b:'tip',co:S.travel==='flight'},
+    {t:'Portable blackout blind or window shade',b:'tip'}
+  );
+  sections.push({id:'sleep',emoji:'😴',title:'Sleep',items:sl});
+
+  var tr=[];
+  if(S.travel==='flight'){
+    tr.push(
+      {t:'Baby carrier or wrap — essential at security checkpoints 🙌',b:'must',co:true},
+      {t:'Pacifier or bottle for takeoff & landing — relieves ear pressure',b:'must',co:true},
+      {t:'Gate-check bag for your stroller',b:'forget'},
+      {t:'Small wipes pack in your personal bag — not in the hold',b:'forget',co:true},
+      {t:'1–2 brand new small toys — novelty buys real quiet time ✨',b:'tip',co:true},
+      {t:'White noise or lullabies downloaded offline on your phone',b:'tip',co:true}
+    );
+    if(nights>=7)tr.push({t:'Compact travel stroller — check airline cabin baggage rules first',b:'tip'});
+  } else {
+    tr.push(
+      {t:'Car seat properly installed — bring the manual',b:'must'},
+      {t:'Window sunshade for the car',b:'must'},
+      {t:'One outfit change within easy reach — not in the boot!',b:'forget'},
+      {t:'Snack container + insulated cooler bag for milk or formula',b:null},
+      {t:'Activity mat or soft toys for rest stops',b:null},
+      {t:'Playlist or white noise downloaded offline',b:'tip'}
+    );
+  }
+  sections.push({id:'travel',emoji:S.travel==='flight'?'✈️':'🚗',title:S.travel==='flight'?'Flight essentials':'Road trip essentials',items:tr});
+
+  var h=[
+    {t:'Baby paracetamol — check age suitability before you go',b:'must'},
+    {t:'Digital ear or forehead thermometer',b:'must'},
+    {t:'Saline nasal drops + nasal aspirator',b:null},
+    {t:'Teething gel or chilled teething rings',b:null},
+    {t:'Antiseptic wipes and small plasters',b:null},
+    {t:'Any prescription medications + a 3-day buffer supply',b:'must',co:S.travel==='flight'}
+  ];
+  if(S.weather==='hot'){h.push({t:'Baby-safe insect repellent — DEET-free for under 2s',b:'must'},{t:'Mineral SPF 50+ sunscreen — safe from 6 months',b:'must'});}
+  sections.push({id:'health',emoji:'🩺',title:'Health & safety',items:h});
+
+  var m=[
+    {t:'Your own medications + extra buffer supply',b:'must',co:S.travel==='flight'},
+    {t:'An extra top for you — spit-up is inevitable 😅',b:'tip',co:S.travel==='flight'},
+    {t:'Your own snacks — a fed mama is a happy mama 🍌',b:'tip',co:S.travel==='flight'},
+    {t:'Portable phone charger — airports drain batteries fast',b:'forget',co:S.travel==='flight'},
+    {t:'Baby\'s health card and travel insurance documents',b:'must',co:S.travel==='flight'},
+    {t:'Copies of passports stored separately from the originals',b:'tip'},
+    {t:'Headphones — even 10 minutes of audio during naptime helps',b:'tip',co:S.travel==='flight'}
+  ];
+  sections.push({id:'mom',emoji:'💛',title:'For you — mama essentials',items:m});
+
+  var e=[
+    {t:'Baby nail scissors or a soft nail file',b:'forget'},
+    {t:'Baby lotion and gentle tear-free shampoo',b:null},
+    {t:'Laundry soap sheets — hand-wash emergencies happen even with access',b:'tip'},
+    {t:'Extra plastic bags — you will always need more than you packed',b:'forget'},
+    {t:'A nightlight + plug adapter if travelling internationally',b:'forget'},
+    {t:'Baby monitor if you\'ll be staying in a separate room',b:null}
+  ];
+  sections.push({id:'forget',emoji:'🫣',title:'Easy to forget',items:e});
+
+  checked=new Set();activeFilter='all';mustOnly=false;
+  document.getElementById('list-tab-btn').textContent='📋 My list ✅';
+  renderOutput(nights,diapers);
+}
+
+function renderOutput(nights,diapers){
+  document.getElementById('empty-state').style.display='none';
+  var area=document.getElementById('list-area');
+  area.style.display='block';
+  var dest=document.getElementById('dest').value.trim();
+  var total=sections.reduce(function(a,s){return a+s.items.length;},0);
+  var destHeader=dest
+    ?'<div class="list-dest">'+
+        '<span class="list-dest-icon">🌍</span>'+
+        '<div>'+
+          '<div class="list-dest-name">'+dest+'</div>'+
+          '<div class="list-dest-meta">'+nights+' night'+(nights===1?'':'s')+' · '+wMeta[S.weather].emoji+' '+wMeta[S.weather].label+'</div>'+
+        '</div>'+
+      '</div>'
+    :'';
+  area.innerHTML=
+    '<p class="print-note">Baby Trip Packer — personalised checklist 🧳</p>'+
+    destHeader+
+    '<div class="stats-row">'+
+      '<div class="stat-box"><div class="val">'+total+'</div><div class="lbl">items</div></div>'+
+      '<div class="stat-box"><div class="val">'+nights+'</div><div class="lbl">nights</div></div>'+
+      '<div class="stat-box"><div class="val">'+diapers+'</div><div class="lbl">diapers</div></div>'+
+    '</div>'+
+    '<div class="progress-wrap">'+
+      '<div class="progress-track"><div class="progress-fill" id="pfill"></div></div>'+
+      '<div class="progress-meta"><span class="progress-pct" id="ppct">0% packed</span><span class="progress-msg" id="pmsg">Ready to start? Let\'s go! 🚀</span></div>'+
+    '</div>'+
+    '<div class="filter-row">'+
+      '<div class="filter-wrap" id="filter-wrap">'+
+        '<button class="filter-toggle" onclick="toggleFilterDropdown()" aria-expanded="false">'+
+          '<span class="filter-toggle-label" id="filter-label">🗂 All categories</span>'+
+          '<span class="filter-toggle-arrow">▼</span>'+
+        '</button>'+
+        '<div class="filter-dropdown" id="filter-dropdown" role="listbox"></div>'+
+      '</div>'+
+      '<button class="btn-musthave" id="btn-musthave" onclick="toggleMustOnly()">⚠️ Must-haves</button>'+
+    '</div>'+
+    (S.travel==='flight'
+      ?'<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--sage-dark);margin-bottom:12px;padding:9px 11px;background:var(--sage-light);border:1.5px solid var(--sage-mid);border-radius:var(--r-sm);line-height:1.5">'+
+        '<span style="flex-shrink:0">🎒</span>'+
+        '<span>Items marked <b>carry-on</b> should stay accessible in your cabin bag — not in checked luggage.</span>'+
+        '</div>'
+      : '')+
+    '<div id="sw"></div>'+
+    '<div class="done-msg" id="done-msg"><span class="big">🎉</span><p>You are FULLY packed and ready to go!<br>Have the most wonderful trip with your little one. 💛✈️</p></div>'+
+    '<div class="share-row">'+
+      '<button class="btn-share" onclick="openShareModal()">📋 Share my list</button>'+
+      '<button class="btn-share" onclick="shareApp()">🔗 Share app</button>'+
+      '<button class="btn-share" onclick="window.print()">🖨️ Print</button>'+
+    '</div>';
+  buildFilters();renderSections();
+}
+
+/* ── Filter dropdown ── */
+function toggleFilterDropdown(){
+  var wrap=document.getElementById('filter-wrap');if(!wrap)return;
+  var isOpen=wrap.classList.toggle('open');
+  wrap.querySelector('.filter-toggle').setAttribute('aria-expanded',String(isOpen));
+}
+function closeFilterDropdown(){
+  var wrap=document.getElementById('filter-wrap');
+  if(wrap){wrap.classList.remove('open');wrap.querySelector('.filter-toggle').setAttribute('aria-expanded','false');}
+}
+document.addEventListener('click',function(e){
+  var wrap=document.getElementById('filter-wrap');
+  if(wrap&&!wrap.contains(e.target))closeFilterDropdown();
+});
+function buildFilters(){
+  var dd=document.getElementById('filter-dropdown');if(!dd)return;
+  dd.innerHTML='<div class="filter-option on" role="option" onclick="setFilter(\'all\',this)">🗂 All categories</div>';
+  sections.forEach(function(s){
+    dd.innerHTML+='<div class="filter-option" role="option" onclick="setFilter(\''+s.id+'\',this)">'+s.emoji+' '+s.title+'</div>';
+  });
+}
+function setFilter(id,el){
+  activeFilter=id;
+  document.querySelectorAll('.filter-option').forEach(function(o){o.classList.remove('on');});
+  el.classList.add('on');
+  var label=document.getElementById('filter-label');
+  if(label)label.textContent=el.textContent;
+  closeFilterDropdown();
+  renderSections();
+}
+
+/* ── #6 Must-haves toggle ── */
+function toggleMustOnly(){
+  mustOnly=!mustOnly;
+  var btn=document.getElementById('btn-musthave');
+  if(btn)btn.classList.toggle('active',mustOnly);
+  renderSections();
+}
+
+/* ── #5 Section collapse ── */
+function toggleSection(sId){
+  var sec=document.getElementById('sec-'+sId);
+  if(sec)sec.classList.toggle('collapsed');
+}
+
+/* ── Render ── */
+function renderSections(){
+  var wrap=document.getElementById('sw');if(!wrap)return;
+  wrap.innerHTML='';
+  sections.forEach(function(s){
+    if(activeFilter!=='all'&&activeFilter!==s.id)return;
+    var allItems=s.items.concat(customItems[s.id]||[]);
+    var visItems=mustOnly?allItems.filter(function(it){return it.b==='must';}):allItems;
+    if(mustOnly&&visItems.length===0)return;
+
+    var done=allItems.filter(function(it){return checked.has(s.id+'::'+it.t);}).length;
+    var sec=document.createElement('div');
+    sec.className='section';sec.id='sec-'+s.id;
+
+    // Section head — clickable to collapse (#5)
+    var head=document.createElement('div');
+    head.className='section-head';
+    head.onclick=function(){toggleSection(s.id);};
+    head.innerHTML=
+      '<span class="section-emoji">'+s.emoji+'</span>'+
+      '<span class="section-title">'+s.title+'</span>'+
+      '<span class="section-count">'+done+'/'+allItems.length+'</span>'+
+      '<span class="section-chevron">▼</span>';
+    sec.appendChild(head);
+
+    // Items container (animated collapse)
+    var itemsWrap=document.createElement('div');
+    itemsWrap.className='section-items';
+
+    visItems.forEach(function(item){
+      var key=s.id+'::'+item.t;
+      var isDone=checked.has(key);
+      var row=document.createElement('div');
+      row.className='item'+(isDone?' checked':'');
+      row.setAttribute('role','checkbox');
+      row.setAttribute('aria-checked',String(isDone));
+      row.setAttribute('tabindex','0');
+
+      // Build badges
+      var badges='';
+      if(item.b==='must')badges+='<span class="item-badge badge-must">⚠️ must-have</span>';
+      else if(item.b==='forget')badges+='<span class="item-badge badge-forget">🫣 easy to forget</span>';
+      else if(item.b==='tip')badges+='<span class="item-badge badge-tip">💡 pro tip</span>';
+      // #9 carry-on badge
+      if(item.co)badges+='<span class="item-badge badge-carryon">🎒 carry-on</span>';
+      var badgesHtml=badges?'<div class="item-badges">'+badges+'</div>':'';
+
+      // Delete button for custom items (#3)
+      var delBtn=item.custom
+        ?'<button class="item-del" title="Remove item" onclick="deleteCustomItem(event,\''+s.id+'\',\''+item.t.replace(/'/g,"\\'")+'\')" tabindex="-1">×</button>'
+        :'';
+
+      row.innerHTML=
+        '<div class="item-check">'+(isDone?'✓':'')+'</div>'+
+        '<div class="item-body"><div class="item-text">'+item.t+'</div>'+badgesHtml+'</div>'+
+        delBtn;
+
+      row.onclick=function(e){
+        if(e.target.classList.contains('item-del'))return;
+        toggle(key,row,s.id,allItems.length,sec,head);
+      };
+      row.onkeydown=function(e){
+        if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle(key,row,s.id,allItems.length,sec,head);}
+      };
+      itemsWrap.appendChild(row);
+    });
+
+    // #3 Add custom item row (always at bottom of each section)
+    var addRow=document.createElement('div');
+    addRow.className='add-item-row';
+    addRow.innerHTML=
+      '<input class="add-item-input" placeholder="Add your own item…" id="ci-'+s.id+'" '+
+        'onkeydown="if(event.key===\'Enter\')addCustomItem(\''+s.id+'\')" autocomplete="off"/>'+
+      '<button class="add-item-btn" onclick="addCustomItem(\''+s.id+'\')">+ Add</button>';
+    itemsWrap.appendChild(addRow);
+
+    sec.appendChild(itemsWrap);
+    wrap.appendChild(sec);
+  });
+  updateProgress();
+}
+
+/* ── #3 Custom items ── */
+function addCustomItem(sId){
+  var inp=document.getElementById('ci-'+sId);
+  if(!inp)return;
+  var txt=inp.value.trim();
+  if(!txt)return;
+  if(!customItems[sId])customItems[sId]=[];
+  customItems[sId].push({t:txt,b:null,custom:true});
+  inp.value='';
+  renderSections();
+  // Re-expand section if collapsed
+  var sec=document.getElementById('sec-'+sId);
+  if(sec)sec.classList.remove('collapsed');
+}
+function deleteCustomItem(e,sId,txt){
+  e.stopPropagation();
+  if(!customItems[sId])return;
+  customItems[sId]=customItems[sId].filter(function(it){return it.t!==txt;});
+  checked.delete(sId+'::'+txt);
+  renderSections();
+}
+
+function toggle(key,row,sId,sTotal,sec,head){
+  if(checked.has(key))checked.delete(key);else checked.add(key);
+  var isDone=checked.has(key);
+  row.classList.toggle('checked',isDone);
+  row.setAttribute('aria-checked',String(isDone));
+  var chk=row.querySelector('.item-check');if(chk)chk.textContent=isDone?'✓':'';
+  // Update count in header
+  if(head){
+    var allItems=(sections.find(function(s){return s.id===sId;})||{items:[]}).items.concat(customItems[sId]||[]);
+    var done=allItems.filter(function(it){return checked.has(sId+'::'+it.t);}).length;
+    var countEl=head.querySelector('.section-count');
+    if(countEl)countEl.textContent=done+'/'+allItems.length;
+  }
+  updateProgress();
+}
+
+function updateProgress(){
+  var total=sections.reduce(function(a,s){
+    return a+s.items.length+(customItems[s.id]?customItems[s.id].length:0);
+  },0);
+  if(!total)return;
+  var pct=Math.round((checked.size/total)*100);
+  var fill=document.getElementById('pfill');
+  var pctEl=document.getElementById('ppct');
+  var msgEl=document.getElementById('pmsg');
+  var doneEl=document.getElementById('done-msg');
+  if(fill)fill.style.width=pct+'%';
+  if(pctEl)pctEl.textContent=pct+'% packed';
+  var msg='Ready to start? Let\'s go! 🚀';
+  if(pct===100)msg='Every single item ✓ You\'re amazing! 🎉';
+  else if(pct>=85)msg='So close — almost ready to go! 🎒';
+  else if(pct>=65)msg='Over halfway — you\'re absolutely crushing it! 🔥';
+  else if(pct>=40)msg='Solid progress! Keep going 💪';
+  else if(pct>=1)msg='Great start — momentum building! 🌱';
+  if(msgEl)msgEl.textContent=msg;
+  if(doneEl)doneEl.style.display=pct===100?'block':'none';
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+
+/* ── #13 Share list as text ── */
+function buildListText(){
+  var lines=['🧳 My Baby Packing List',''];
+  sections.forEach(function(s){
+    var allItems=s.items.concat(customItems[s.id]||[]);
+    lines.push(s.emoji+' '+s.title.toUpperCase());
+    allItems.forEach(function(item){
+      var tick=checked.has(s.id+'::'+item.t)?'✅':'⬜';
+      var tags='';
+      if(item.co)tags+=' [carry-on]';
+      if(item.b==='must')tags+=' [must-have]';
+      lines.push(tick+' '+item.t+tags);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function openShareModal(){
+  if(!sections.length)return;
+  document.getElementById('share-text').value=buildListText();
+  document.getElementById('share-modal').classList.add('open');
+}
+function closeShareModal(e){
+  if(e&&e.target!==document.getElementById('share-modal'))return;
+  document.getElementById('share-modal').classList.remove('open');
+}
+function copyShareText(){
+  var ta=document.getElementById('share-text');
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(ta.value).then(function(){showToast('✅ List copied! Paste it anywhere 💛');});
+  } else {
+    ta.select();document.execCommand('copy');showToast('✅ Copied!');
+  }
+  document.getElementById('share-modal').classList.remove('open');
+}
+
+function shareApp(){
+  var url=window.location.href;
+  if(navigator.share){
+    navigator.share({title:'🧳 Baby Trip Packer',text:'The smartest baby packing checklist — personalised in seconds!',url:url}).catch(function(){});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(function(){showToast('🔗 App link copied! Share with your partner 💛');});
+  } else {
+    showToast('Copy the URL from your address bar to share!');
+  }
+}
+
+function handleResize(){
+  if(window.innerWidth>680){
+    document.getElementById('form-col').classList.add('tab-active');
+    document.getElementById('list-col').classList.add('tab-active');
+    document.getElementById('mobile-cta').style.display='none';
+  } else {
+    var activeTab=document.querySelector('.tab-btn.active');
+    if(activeTab&&activeTab.textContent.includes('Trip')){
+      document.getElementById('mobile-cta').style.display='block';
+    }
+  }
+}
+window.addEventListener('resize',handleResize);
+handleResize();
+</script>
+</body>
+</html>
