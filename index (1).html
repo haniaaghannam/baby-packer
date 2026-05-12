@@ -9,13 +9,12 @@
 <meta property="og:description" content="The smartest packing checklist for mamas travelling with a baby. Personalised in seconds."/>
 <meta property="og:type" content="website"/>
 <title>🧳 Baby Trip Packer — Smart Packing for Little Ones</title>
-<!-- Google tag (gtag.js) -->
+<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YM7HKZJRVB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-YM7HKZJRVB');
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -887,7 +886,7 @@ body{
     <textarea class="modal-textarea" id="share-text" readonly></textarea>
     <div class="modal-actions">
       <button class="modal-btn modal-btn-primary" onclick="copyShareText()">📋 Copy to clipboard</button>
-      <button class="modal-btn modal-btn-secondary" onclick="closeShareModal()">Close</button>
+      <button class="modal-btn modal-btn-secondary" onclick="document.getElementById('share-modal').classList.remove('open')">Close</button>
     </div>
   </div>
 </div>
@@ -1081,6 +1080,18 @@ function generate(){
 
   checked=new Set();activeFilter='all';mustOnly=false;
   document.getElementById('list-tab-btn').textContent='📋 My list ✅';
+  // Track list generation
+  if(typeof gtag==='function'){
+    gtag('event','generate_list',{
+      destination: document.getElementById('dest').value.trim()||'unknown',
+      nights: nights,
+      travel_mode: S.travel,
+      feeding: S.feeding,
+      age_group: S.age,
+      weather: S.weather,
+      has_solids: S.solids
+    });
+  }
   renderOutput(nights,diapers);
 }
 
@@ -1356,6 +1367,7 @@ function closeShareModal(e){
   document.getElementById('share-modal').classList.remove('open');
 }
 function copyShareText(){
+  if(typeof gtag==='function') gtag('event','share_list');
   var ta=document.getElementById('share-text');
   if(navigator.clipboard){
     navigator.clipboard.writeText(ta.value).then(function(){showToast('✅ List copied! Paste it anywhere 💛');});
@@ -1366,6 +1378,7 @@ function copyShareText(){
 }
 
 function shareApp(){
+  if(typeof gtag==='function') gtag('event','share_app');
   var url=window.location.href;
   if(navigator.share){
     navigator.share({title:'🧳 Baby Trip Packer',text:'The smartest baby packing checklist — personalised in seconds!',url:url}).catch(function(){});
